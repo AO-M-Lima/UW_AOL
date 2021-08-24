@@ -1,2 +1,2 @@
 # UW_AOL
-Scripts library
+Collection of analysis pipelines to use in functional genomics 
