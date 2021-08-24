@@ -1,0 +1,20 @@
+#$ -S /bin/bash
+#$ -pe serial  1 ## number_of_nodes
+#$ -l mfree=30G -l h_rt=10:00:00    ##memory request and time for the job   
+#$ -o  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#$ -e  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#################################################################
+
+
+##ATAC-seq 
+## remove the adaptors
+##nextera - saw on the fastqc files
+
+
+conda activate your_env
+
+
+trim_galore --path_to_cutadapt /net/hawkins/vol1/home/User_name/your_miniconda/bin/cutadapt --nextera --dont_gzip --paired r1.fastq r2.fastq 
+
+##replace r1.fastq r2.fastq for the your files .fastq 
+##first r1 after r2 
