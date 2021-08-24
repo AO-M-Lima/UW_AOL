@@ -1,0 +1,34 @@
+#$ -S /bin/bash
+#$ -pe serial  2 ## number_of_nodes
+#$ -l mfree=20G -l h_rt=10:00:00    ##memory request and time for the job   
+#$ -o  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#$ -e  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+###########################################################################
+## Aligment the reads to the Genome reference
+## ATAC-seq
+## Human 
+##Bowtie2:http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml
+## using the genome index from: /net/hawkins/vol1/scripts_files/genome_human_21/bowtie2-index 
+##to use per sample
+############################################################################
+
+module load bowtie2/2.4.1     ##load bowtie2
+##
+
+
+cd /net/hawkins/vol1/home/your_home_/path_of_your_folder
+
+
+bowtie2 -q --threads 2 -x /net/hawkins/vol1/scripts_files/genome_human_21/bowtie2-index/hg38 -1 r1.fastq -2 r1.fastq r2.fastq -S name_of_output_sample.sam 
+
+##-x : use the same name that you use to build the genome (without the extension) ## on the Genome index should have 6 files (.bt2) 
+
+## -q using .fq file 
+
+## --threads number of nodes 
+
+## -1 R1 
+
+## -2 R2 
+
+## -S output files (sam file)
