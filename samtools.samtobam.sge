@@ -1,0 +1,24 @@
+#$ -S /bin/bash
+#$ -pe serial  2 ## number_of_nodes
+#$ -l mfree=20G -l h_rt=10:00:00    ##memory request and time for the job  
+#$ -o  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#$ -e  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+###########################################################################
+## Convert sam to bam and sort 
+## ATAC-seq
+## Human 
+##Samtools: http://www.htslib.org/doc/samtools.html 
+##to use per sample
+############################################################################
+
+module load samtools/1.9    
+##
+
+
+cd /net/hawkins/vol1/home/your_home_/path_of_your_folder
+
+samtools view -@ 2 -Su your_file.sam | samtools sort -@ 2 -o your_file_sorted.bam
+
+## -@ number of nodes
+
+##end
