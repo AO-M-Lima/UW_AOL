@@ -1,0 +1,30 @@
+#!/bin/bash 
+#!/usr/bin/env python
+#$ -S /bin/bash
+#$ -pe serial 1
+#$ -l mfree=50G -l h_rt=120:00:00
+#$ -o /net/hawkins/vol1/scripts_files/genome_human_21/bowtie2-index
+#$ -e /net/hawkins/vol1/scripts_files/genome_human_21/bowtie2-index
+
+###########################################################################
+##Create the genome index
+##using bowtie2
+##http://bowtie-bio.sourceforge.net/bowtie2/index.shtml
+##human genome -hg38
+##ATAC-seq 
+## date: 08-24-21
+#############################################################################
+
+dir=/net/hawkins/vol1/scripts_files/genome_human_21/bowtie2-index  ##genome index 
+ref=/net/hawkins/vol1/scripts_files/genome_human_21/hg38.fa         ## genome in fasta format 
+   
+##
+module load bowtie2/2.4.1
+##
+
+cd $dir
+
+
+bowtie2-build  $ref $dir/hg38 
+
+##end 
