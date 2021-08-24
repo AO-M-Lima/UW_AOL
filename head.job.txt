@@ -1,0 +1,5 @@
+#$ -S /bin/bash
+#$ -pe serial  1 ## number_of_nodes
+#$ -l mfree=10G -l h_rt=10:00:00    ##memory request and time for the job   
+#$ -o  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#$ -e  /net/hawkins/vol1/home/your_home_/path_of_your_folder
