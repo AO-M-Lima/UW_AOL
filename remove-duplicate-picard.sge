@@ -10,9 +10,6 @@
 ##############################################################
 
 module load java/1.8.0  ## picard need to the java
-
-
-module load java/1.8.0  ## picard need to the java
 ##
 
 cd  /path/of_your_directory
