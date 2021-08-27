@@ -1,3 +1,4 @@
+#$ -S /bin/bash
 #$ -pe serial 4 #number_of_nodes
 #$ -l mfree=16G -l h_rt=170:00:00 #free_memory_each_node
 #$ -o  path_for_the_job_log #replace_for_your_folder
