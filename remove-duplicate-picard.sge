@@ -1,0 +1,31 @@
+#$ -pe serial 4 #number_of_nodes
+#$ -l mfree=16G -l h_rt=170:00:00 #free_memory_each_node
+#$ -o  path_for_the_job_log #replace_for_your_folder
+#$ -e  path_for_the_job_log #replace_for_your_folder
+##############################################################
+##ATAC-seq
+##remove the duplicated reads
+##using picard tools
+##############################################################
+
+module load java/1.8.0  ## picard need to the java
+
+
+module load java/1.8.0  ## picard need to the java
+##
+
+cd  /path/of_your_directory
+
+##
+##you need to include the execute file of picard picard.jar
+## the bam file must be sorted; use Sammtools
+## bam file name output
+## log file name
+#
+
+java -Xmx4g -jar /path_the_with_exe_file/picard/picard.jar MarkDuplicates \
+             REMOVE_DUPLICATES=true \
+             I=your_file_sorted.bam \
+             O=your_output_file_name_noDups.bam \
+             M=your_output_file_name_stats.txt \
+             VALIDATION_STRINGENCY=LENIENT
