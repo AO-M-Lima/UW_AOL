@@ -1,0 +1,108 @@
+##Pipeline for Cut&Tag
+
+##use the head for a job.sge
+
+## All the jobs(.sge)
+#####Create a genome index using bowtie2############################################################################
+##software (modules) 
+module load bowtie2/2.4.1 ##bowtie to align
+module load samtools/1.9 ## to bam manipulation
+module load  fastqc/0.11.7 ## QC quality
+##
+
+##build the index genome 
+bowtie2-build  ${your.genome.fasta}  ${your-folder-path/index-name} ##create a inde name 
+##*****
+
+##working with fasta file
+##
+##use cat to concat the .fastq files (per pair-read -PE) 
+cat *_R1.fastq > all_R1.fastq (this can be used only for SE)
+cat *_R2.fastq > all_R2.fastq
+##***
+
+##QC of sequecing -fastq 
+##
+fastqc *.fastq.gz
+##****
+
+##Remove adapters - use trimgalore (you can install with conda) 
+#
+conda activate base (after install the trimgalore with conda)
+#
+trim_galore --path_to_cutadapt /net/hawkins/vol1/home/aolima/miniconda2/bin/cutadapt --nextera --dont_gzip --paired ${R1_001.fastq} ${R1_001.fastq} --output_dir ${your_folder_output} 
+##notes:
+##you need to install cutadapt ## --nextera if you use nextera, if not you need to change ##to paried-end mode ##run fastqc again with the trimmed file 
+##****
+
+###mapping C&T####################################################
+##bowtie2
+##
+##using the protocol (Cut&Tag) from the Nature protocols
+##"Efficient low-cost chromatin profiling with Cut&Tag"
+##Kaya-Okur et al., 2020
+################################################################
+
+ bowtie2 -q --threads 1 -x ${index.genome} --very-sensitive --end-to-end -I 10 -X 700 --no-discordant --no-mixed --no-unal -1 ${R1_001_val_1.fq} -2 ${R2_001_val_2.fq} -S ${output.your.align-file.sam} 
+ 
+## convert to bam. file and sort
+samtools view -@ 1 -Su ${your-file.sam} | samtools sort -@ 1 -o ${output.your.sorted.file.bam}
+##***
+## filter-out the MT, sexual-chrm and unmapped files from .fasta (if necessary) 
+##
+#first create a index
+samtools index ${your.sorted.bam.file}
+##
+
+samtools idxstats ${sorted.bam.file} | cut -f1 | grep -v MT | grep -v X | grep -v Y | grep -v KI270* | grep -v  GL00* | xargs samtools view -b ${sorted.bam.file} > ${your.filter.bam}
+##based in human ensembl genome
+##need to change based on the fasta file 
+#KI270* and GL00* unmapped regions (See genome stats)
+## need to sort again - samtools sort {bam.file} -o {your-output.bam}
+##****
+
+## remove duplicated #######
+module load java/1.8.0 ##picard uses java 
+
+
+java -Xmx30g -jar /net/hawkins/vol1/home/aolima/tools/picard/picard.jar MarkDuplicates \ ##you can download from picard git.hub : use wget command 
+             REMOVE_DUPLICATES=true \
+             I=${sorted-bam.file} \
+             O=${sorted_noDups.bam} \
+             M=${sorted_noDups.txt} \
+             VALIDATION_STRINGENCY=LENIENT
+
+##****************************
+##calling peaks using MACS2 -conda activate (I used conda to install)
+
+#convert to .bw files
+bamCoverage -p 4 -b ${your-sorted-filterout-noduplicated.bam} -bs 50 --normalizeUsing RPKM  -v  -o ${your-output-coverage.bw} ##you can use this on the genome browser
+
+## need to sort the files first - uses Samtools sort
+## need to create a index  -used samtools index 
+##****
+
+##calling peaks
+
+macs2 callpeak -t ${your-sorted-filterout-noduplicated.bam} \
+        -f BAM -g mm \
+        -n $(sample-name-peaks} --nolambda \
+        --SPMR -B --nomodel \
+        --outdir ${your-folder-output} 2> ${your-log-file}.log
+
+## -g effective genome size -see on the MAC2 manual  (obs: I used mouse mm size for chicken) 
+
+##*****
+##using homer to find motifs 
+findMotifsGenome.pl ${your_summits.bed}  ${fasta.geome.fa}  ${your-folder-output_homer} -size 200 
+
+##summits.bed output from MACS2 
+
+
+
+
+
+
+
+
+
