@@ -31,9 +31,9 @@ fastqc *.fastq
 #
 conda activate base (after install the trimgalore with conda)
 #
-trim_galore --path_to_cutadapt /net/hawkins/vol1/home/aolima/miniconda2/bin/cutadapt --nextera --dont_gzip --paired ${R1_001.fastq} ${R1_001.fastq} --output_dir ${your_folder_output} 
+trim_galore --path_to_cutadapt /net/hawkins/vol1/home/aolima/miniconda2/bin/cutadapt --nextera --dont_gzip --paired ${R1_001.fastq} ${R2_001.fastq} --output_dir ${your_folder_output} 
 ##notes:
-##you need to install cutadapt ## --nextera if you use nextera, if not you need to change ##to paried-end mode ##run fastqc again with the trimmed file 
+##you need to install cutadapt ## --nextera if you use nextera, if not you need to change the adaptors flag ##to paried-end mode ##run fastqc again with the trimmed files 
 ##****
 
 ###mapping C&T####################################################
@@ -57,14 +57,13 @@ samtools index ${your.sorted.bam.file}
 
 samtools idxstats ${sorted.bam.file} | cut -f1 | grep -v MT | grep -v X | grep -v Y | grep -v KI270* | grep -v  GL00* | xargs samtools view -b ${sorted.bam.file} > ${your.filter.bam}
 ##based in human ensembl genome
-##need to change based on the fasta file 
-#KI270* and GL00* unmapped regions (See genome stats)
+##need to change based on the fasta file (.fa)
+#KI270* and GL00* unmapped regions for human (See genome stats)
 ## need to sort again - samtools sort {bam.file} -o {your-output.bam}
 ##****
 
 ## remove duplicated #######
 module load java/1.8.0 ##picard uses java 
-
 
 java -Xmx30g -jar /net/hawkins/vol1/home/aolima/tools/picard/picard.jar MarkDuplicates \ ##you can download from picard git.hub : use wget command 
              REMOVE_DUPLICATES=true \
@@ -74,16 +73,16 @@ java -Xmx30g -jar /net/hawkins/vol1/home/aolima/tools/picard/picard.jar MarkDupl
              VALIDATION_STRINGENCY=LENIENT
 
 ##****************************
-##calling peaks using MACS2 -conda activate (I used conda to install)
+##calling peaks using MACS2 -conda activate (I used conda to install packages)
 
 #convert to .bw files
-bamCoverage -p 4 -b ${your-sorted-filterout-noduplicated.bam} -bs 50 --normalizeUsing RPKM  -v  -o ${your-output-coverage.bw} ##you can use this on the genome browser
+bamCoverage -p 1 -b ${your-sorted-filterout-noduplicated.bam} -bs 50 --normalizeUsing RPKM  -v  -o ${your-output-coverage.bw} ##you can use this on the genome browser
 
 ## need to sort the files first - uses Samtools sort
-## need to create a index  -used samtools index 
+## need to create a index first  -used samtools index 
 ##****
 
-##calling peaks
+##calling peaks############
 
 macs2 callpeak -t ${your-sorted-filterout-noduplicated.bam} \
         -f BAM -g mm \
@@ -91,14 +90,15 @@ macs2 callpeak -t ${your-sorted-filterout-noduplicated.bam} \
         --SPMR -B --nomodel \
         --outdir ${your-folder-output} 2> ${your-log-file}.log
 
-## -g effective genome size -see on the MAC2 manual  (obs: I used mouse mm size for chicken) 
+## -g effective genome size -see the MAC2 manual  (obs: I used mouse mm size for chicken) 
 
 ##*****
 ##using homer to find motifs 
 findMotifsGenome.pl ${your_summits.bed}  ${fasta.geome.fa}  ${your-folder-output_homer} -size 200 
 
 ##summits.bed output from MACS2 
-
+##******
+##end 
 
 
 
