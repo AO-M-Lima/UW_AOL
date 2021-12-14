@@ -16,6 +16,7 @@ bowtie2-build  ${your.genome.fasta}  ${your-folder-path/index-name} ##create a i
 
 ##working with fasta file
 ##
+##remove from .gz : gunzip *.gz 
 ##use cat to concat the .fastq files (per pair-read -PE) 
 cat *_R1.fastq > all_R1.fastq (this can be used only for SE)
 cat *_R2.fastq > all_R2.fastq
@@ -23,7 +24,7 @@ cat *_R2.fastq > all_R2.fastq
 
 ##QC of sequecing -fastq 
 ##
-fastqc *.fastq.gz
+fastqc *.fastq
 ##****
 
 ##Remove adapters - use trimgalore (you can install with conda) 
