@@ -1,0 +1,16 @@
+#$ -S /bin/bash
+#$ -pe serial  1 ## number_of_nodes
+#$ -l mfree=15G -l h_rt=10:00:00    ##memory request and time for the job   
+#$ -o  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#$ -e  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+
+##
+
+module load  hisat2/2.2.1 #or conda activate 
+
+## mapping RNA-seq
+##Chicken genome
+
+cd /your_home_/path_of_your_folder
+
+hisat2 -x /net/hawkins/vol1/genome2/chicken/indexes/HISAT2_index/Gallus_GRCg7b_ncbi -1 {fastq 1} -2 {fastq 2} -S Sample_name.sam --summary-file Sample_name_stats.txt
