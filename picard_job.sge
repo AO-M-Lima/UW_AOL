@@ -1,0 +1,33 @@
+#$ -S /bin/bash
+#$ -pe serial  1 ## number_of_nodes
+#$ -l mfree=45G -l h_rt=30:00:00    ##memory request and time for the job   
+#$ -o  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+#$ -e  /net/hawkins/vol1/home/your_home_/path_of_your_folder
+##
+
+module load java/1.8.0
+module load samtools/1.9
+
+##Processing pos-mapping
+##WGBS bam file
+##sort - remove duplicates 
+
+###
+
+cd /net/hawkins/vol1/home/your_home_/path_of_your_folder
+
+##sort file using samtools
+samtools sort {your bam file} -o {sample name}_sorted.bam
+
+
+##create a index
+samtools index {sample name}_sorted.bam
+
+##remove the duplicates
+java -Xmx45g  -jar /path_of_your_folder/picard.jar -h MarkDuplicates \
+             REMOVE_DUPLICATES=true \
+             I={sample name}_sorted.bam \
+             O={sample name}_noDups.bam \
+             M={sample name}_noDups.txt \
+             VALIDATION_STRINGENCY=LENIENT
+
