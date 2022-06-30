@@ -1,0 +1,25 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -pe serial 3
+#$ -l mfree=10G -l h_rt=100:00:00
+#$ -o /net/hawkins/vol1/home/your_folder
+#$ -e /net/hawkins/vol1/homeyour_folder
+########################################################################################### 
+##
+
+##convert the sam file to bam file and sort
+##preparing the input file to merge (stringtie)
+
+module load samtools/1.9
+conda activate {your env installed stringtie} 
+
+
+cd /net/hawkins/vol1/home/your_folder
+
+##sort your file 
+samtools view -@ 3 -Su {your bam file A2}| samtools sort -@ 3 -o A2_sorted.bam
+samtools view -@ 3 -Su {your bam file B2} | samtools sort -@ 3 -o B2_sorted.bam
+
+##fisrt step stringtie - input gtf 
+stringtie -p 3 {your sample A2_sorted.bam} -v  -t -f 0.05  -j 1.5 -c 1.5  -G /net/hawkins/vol1/genome2/chicken/indexes/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.gff -o A2_stringtie_input.gtf
+stringtie -p 3 {your sample B2_sorted.bam} -v  -t -f 0.05  -j 1.5 -c 1.5  -G /net/hawkins/vol1/genome2/chicken/indexes/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.gff -o B2_stringtie_input.gtf
