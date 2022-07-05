@@ -1,0 +1,14 @@
+###using qlogin session 
+qlogin -l mfree=20G
+
+(using in your folder with the inputs) 
+conda activate your env
+
+##merge command  
+stringtie --merge -G /net/hawkins/vol1/genome2/chicken/indexes/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.gff -o  new_genome_annotation.gtf  list.txt 
+
+##get the number of transcript 
+ grep -w "transcript" new_genome_annotation.gtf | wc -l
+ 
+##using gffcompare 
+gffcompare -r /net/hawkins/vol1/genome2/chicken/indexes/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.gff   new_genome_annotation.gtf  -V -o data_new_genome
