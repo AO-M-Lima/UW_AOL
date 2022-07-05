@@ -1,0 +1,14 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -pe serial 1
+#$ -l mfree=40G -l h_rt=100:00:00
+#$ -o /your_foler_path
+#$ -e /your_foler_path
+
+conda activate your HT-seq env
+
+
+cd /your_folder
+
+htseq-count  -r pos -f bam -s no -m union -t exon -i gene_id --additional-attr=ref_gene_id  {your_A2_bam_dfile}  new_genome_annotation.gtf  > A2_htseq.txt
+htseq-count  -r pos -f bam -s no -m union -t exon -i gene_id --additional-attr=ref_gene_id  {your_B2_bam_dfile}  new_genome_annotation.gtf  > B2_htseq.txt
