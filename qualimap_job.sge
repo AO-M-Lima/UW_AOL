@@ -1,0 +1,29 @@
+#$ -S /bin/bash
+#$ -pe serial 1
+#$ -l mfree=20G -l h_rt=100:00:00
+#$ -o /your/folder
+#$ -e /your/folder
+
+################################################################################
+##verify the .bam file
+##Qualimap
+##RNASeq
+##USDA/FAANG
+#################################################################################
+
+conda activate (your env with qualimap)
+
+cd /net/hawkins/vol1/RNAseq_FAANG_704/bam_sorted_files
+
+qualimap bamqc \
+      --java-mem-size=20G -bam {your_bam_file} \
+      -outdir /net/hawkins/vol1/RNAseq_FAANG_704/bam_sorted_files -outfile your_bam_file.pdf \
+      -outformat PDF
+
+
+
+##--java-mem-size=20G #memory you request
+##-bam  # format of your file (bam)
+## -outdir ## the folfer you want to save your output
+##-outfile  the name of your report
+## -outformat format you want to save your report
