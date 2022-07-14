@@ -1,0 +1,14 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -pe serial 4
+#$ -l mfree=10G -l h_rt=100:00:00
+#$ -o /your/folder
+#$ -e /your/folder
+##########################################################################################################
+
+conda activate (your env)
+
+cd {your_folder}
+
+stringtie {your_bam_file} -p 4 -G {your_merge_file}.gtf -A {sample_name}_abund.tab -C {sample_name}_cov_refs.gtf -e -b {sample_name}_ballgown -o {sample_name}_expr.gtf
+
