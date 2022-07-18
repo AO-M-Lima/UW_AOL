@@ -1,0 +1,12 @@
+#!/bin/bash
+##$ -S /bin/bash
+##$ -pe serial 1
+##$ -l mfree=65G -l h_rt=127:27:27
+#$ -o /your/folder
+#$ -e /your/folder
+##########################################################################################################
+
+
+cd /your/folder
+
+/net/hawkins/vol1/home/aolima/tools/cgmaptools/cgmaptools convert bam2cgmap -b {your_bam_file}.bam -g /net/hawkins/vol1/genome2/chicken/indexes/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.fna --rmOverlap  -o {Sample_name}_CGs
